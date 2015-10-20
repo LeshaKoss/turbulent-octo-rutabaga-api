@@ -11,8 +11,9 @@ def hello():
 @app.route("/upload", methods=['POST'])
 def upload_file():
     file = request.files['sound']
-    print file.filename
     if file:
+        if not os.path.isdir(UPLOAD_FOLDER):
+            os.mkdir(UPLOAD_FOLDER)
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_FOLDER, filename))
         return filename
