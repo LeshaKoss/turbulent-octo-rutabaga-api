@@ -7,6 +7,8 @@ UPLOAD_FOLDER = "uploads/"
 
 @app.route("/")
 def index():
+    if not os.path.isdir(UPLOAD_FOLDER):
+        os.mkdir(UPLOAD_FOLDER)
     projects = os.listdir(UPLOAD_FOLDER)
     return projects.__repr__() + "\n"
 
@@ -27,4 +29,4 @@ def upload_file():
         return filename
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host = "0.0.0.0", debug=True)
