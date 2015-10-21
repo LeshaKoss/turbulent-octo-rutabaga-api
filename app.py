@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify, send_from_directory
-from werkzeug import secure_filename
 import os
 import uuid
 app = Flask(__name__)
@@ -23,9 +22,9 @@ def upload_file():
     if file:
         if not os.path.isdir(UPLOAD_FOLDER):
             os.mkdir(UPLOAD_FOLDER)
-        filename = secure_filename(file.filename)
+        filename = uuid.uuid4().__str__() + ".wav" 
          
-        file.save(os.path.join(UPLOAD_FOLDER, uuid.uuid4().__str__() + ".wav"))
+        file.save(os.path.join(UPLOAD_FOLDER, filename))
         return filename
 
 if __name__ == "__main__":
