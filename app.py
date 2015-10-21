@@ -25,7 +25,7 @@ def upload_file():
         filename = uuid.uuid4().__str__() + ".wav" 
          
         file.save(os.path.join(UPLOAD_FOLDER, filename))
-        return filename
+        return filename + "\n"
 
 if __name__ == "__main__":
     app.run(host = "0.0.0.0", debug=True)
