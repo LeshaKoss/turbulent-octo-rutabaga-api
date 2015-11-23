@@ -6,6 +6,10 @@ UPLOAD_FOLDER = "uploads/"
 
 @app.route("/")
 def index():
+    return send_from_directory('', 'index.html')
+
+@app.route("/sounds")
+def get_sounds_list():
     if not os.path.isdir(UPLOAD_FOLDER):
         os.mkdir(UPLOAD_FOLDER)
     sounds = os.listdir(UPLOAD_FOLDER)
