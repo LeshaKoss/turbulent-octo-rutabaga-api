@@ -6,7 +6,11 @@ UPLOAD_FOLDER = "uploads/"
 
 @app.route("/")
 def index():
-    return send_from_directory('', 'index.html')
+    return send_from_directory('static/', 'index.html')
+    
+@app.route("/<path:path>")
+def serve_static_files():
+    return send_from_directory('static/', path)
 
 @app.route("/sounds")
 def get_sounds_list():
