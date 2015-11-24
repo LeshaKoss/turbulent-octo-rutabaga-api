@@ -9,7 +9,7 @@ def index():
     return send_from_directory('static/', 'index.html')
     
 @app.route("/<path:path>")
-def index():
+def serve_static_files():
     return send_from_directory('static/', path)
 
 @app.route("/sounds")
