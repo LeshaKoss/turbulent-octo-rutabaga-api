@@ -30,7 +30,7 @@ def upload_file():
     if file:
         if not os.path.isdir(UPLOAD_FOLDER):
             os.mkdir(UPLOAD_FOLDER)
-        filename = uuid.uuid4().__str__() + ".wav"
+        filename = uuid.uuid4().__str__()
 
         file.save(os.path.join(UPLOAD_FOLDER, filename))
         return filename + "\n"
