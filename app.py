@@ -17,7 +17,10 @@ def get_sounds_list():
     if not os.path.isdir(UPLOAD_FOLDER):
         os.mkdir(UPLOAD_FOLDER)
     sounds = os.listdir(UPLOAD_FOLDER)
-    return jsonify({'sounds': sounds})
+    _sounds = []
+    for sound in sounds:
+        _sounds.append({'title': sound, 'filename': sound})
+    return jsonify({'sounds': _sounds})
 
 
 @app.route("/sounds/<path:path>")
@@ -26,7 +29,8 @@ def serve_static(path):
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
-    file = request.files["sound"]
+    file = request.files["file"]
+
     if file:
         if not os.path.isdir(UPLOAD_FOLDER):
             os.mkdir(UPLOAD_FOLDER)
