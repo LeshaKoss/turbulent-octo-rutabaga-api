@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, send_from_directory
 import os
 import uuid
+import shutil
+
 app = Flask(__name__)
 UPLOAD_FOLDER = "uploads/"
 
@@ -38,6 +40,15 @@ def upload_file():
 
         file.save(os.path.join(UPLOAD_FOLDER, filename))
         return filename + "\n"
+
+@app.route("/del")
+def delete():
+    try:
+        shutil.rmtree(UPLOAD_FOLDER)
+        return jsonify({'result': 'success'})
+    except Exception as e:
+        return jsonify({'result': str(e)})
+
 
 if __name__ == "__main__":
     app.run(host = "0.0.0.0", debug=True)
