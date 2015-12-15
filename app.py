@@ -4,6 +4,8 @@ import uuid
 import shutil
 import psycopg2
 import urlparse
+import json
+from psycopg2.extras import Json
 
 urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(os.environ["DATABASE_URL"])
@@ -16,6 +18,7 @@ conn = psycopg2.connect(
     port=url.port
 )
 db = conn.cursor()
+psycopg2.extensions.register_adapter(dict, Json)
 
 app = Flask(__name__)
 UPLOAD_FOLDER = "uploads/"
@@ -45,6 +48,7 @@ def serve_static(path):
 @app.route("/upload", methods=["POST"])
 def upload_file():
     file = request.files["file"]
+    info = json.JSONDecoder().decode(request.values["info"])
 
     if file:
         if not os.path.isdir(UPLOAD_FOLDER):
@@ -52,6 +56,9 @@ def upload_file():
         filename = uuid.uuid4().__str__()
 
         file.save(os.path.join(UPLOAD_FOLDER, filename))
+        file_desc = {"filename": info['filename'], "title": info['title']}
+        db.execute("INSERT INTO files VALUES(%s)", [file_desc])
+        conn.commit()
         return filename + "\n"
 
 @app.route("/del")
@@ -59,6 +66,7 @@ def delete():
     try:
         shutil.rmtree(UPLOAD_FOLDER)
         db.execute("""DELETE FROM files""")
+        conn.commit()
         return jsonify({'result': 'success'})
     except Exception as e:
         return jsonify({'result': str(e)})
