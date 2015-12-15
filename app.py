@@ -2,6 +2,20 @@ from flask import Flask, request, jsonify, send_from_directory
 import os
 import uuid
 import shutil
+import psycopg2
+import urlparse
+
+urlparse.uses_netloc.append("postgres")
+url = urlparse.urlparse(os.environ["DATABASE_URL"])
+
+conn = psycopg2.connect(
+    database=url.path[1:],
+    user=url.username,
+    password=url.password,
+    host=url.hostname,
+    port=url.port
+)
+db = conn.cursor()
 
 app = Flask(__name__)
 UPLOAD_FOLDER = "uploads/"
@@ -16,12 +30,11 @@ def serve_static_files(path):
 
 @app.route("/sounds")
 def get_sounds_list():
-    if not os.path.isdir(UPLOAD_FOLDER):
-        os.mkdir(UPLOAD_FOLDER)
-    sounds = os.listdir(UPLOAD_FOLDER)
+    db.execute("""SELECT * FROM files""")
+    rows = db.fetchall()
     _sounds = []
-    for sound in sounds:
-        _sounds.append({'title': sound, 'filename': sound})
+    for row in rows:
+        _sounds.append(row[0])
     return jsonify({'sounds': _sounds})
 
 
