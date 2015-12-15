@@ -56,7 +56,9 @@ def upload_file():
         filename = uuid.uuid4().__str__()
 
         file.save(os.path.join(UPLOAD_FOLDER, filename))
-        file_desc = {"filename": info['filename'], "title": info['title']}
+        if not info['title']:
+            info['title'] = 'Amazing recording'
+        file_desc = {"filename": filename, "title": info['title']}
         db.execute("INSERT INTO files VALUES(%s)", [file_desc])
         conn.commit()
         return filename + "\n"
