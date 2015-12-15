@@ -58,6 +58,7 @@ def upload_file():
 def delete():
     try:
         shutil.rmtree(UPLOAD_FOLDER)
+        db.execute("""DELETE FROM files""")
         return jsonify({'result': 'success'})
     except Exception as e:
         return jsonify({'result': str(e)})
