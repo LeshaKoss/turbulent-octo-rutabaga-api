@@ -39,6 +39,7 @@ def add_debug_file():
     open(os.path.join(UPLOAD_FOLDER, filename), 'a').close()
     file_desc = {"filename": filename, "title": filename}
     db.execute("INSERT INTO files VALUES(%s)", [file_desc])
+    conn.commit()
     return jsonify(file_desc)
 
 @app.route("/sounds")
