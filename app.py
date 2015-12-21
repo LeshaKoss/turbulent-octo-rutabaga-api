@@ -31,6 +31,15 @@ def index():
 def serve_static_files(path):
     return send_from_directory('static/', path)
 
+@app.route("/add-debug-file")
+def add_debug_file():
+    if not os.path.isdir(UPLOAD_FOLDER):
+        os.mkdir(UPLOAD_FOLDER)
+    filename = uuid.uuid4().__str__()
+    open(os.path.join(UPLOAD_FOLDER, filename), 'a').close()
+    file_desc = {"filename": filename, "title": filename}
+    db.execute("INSERT INTO files VALUES(%s)", [file_desc])
+
 @app.route("/sounds")
 def get_sounds_list():
     db.execute("""SELECT * FROM files""")
